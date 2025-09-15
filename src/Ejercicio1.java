@@ -7,7 +7,7 @@ public class Ejercicio1 {
 
         Scanner teclat = new Scanner(System.in);
         String ruta = ".";
-        while (!ruta.equals(" ")) {
+        while (!ruta.equals("")) {
             System.out.println("Dime la ruta a utilizar");
             ruta = teclat.nextLine();
             try {
