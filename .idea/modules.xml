@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ADA.iml" filepath="$PROJECT_DIR$/ADA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Ejercicios Excepciones/Ejercicios Excepciones.iml" filepath="$PROJECT_DIR$/Ejercicios Excepciones/Ejercicios Excepciones.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Minifilemanager/Minifilemanager.iml" filepath="$PROJECT_DIR$/Minifilemanager/Minifilemanager.iml" />
     </modules>
   </component>
 </project>
