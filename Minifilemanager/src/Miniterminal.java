@@ -76,6 +76,8 @@ public class Miniterminal {
                 case "exit":
                     break;
 
+                case "shutdown":
+                    minifilemanager.shutdown();
                 default:
                     System.out.println("ERROR de sintaxis");
             }

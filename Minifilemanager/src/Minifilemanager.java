@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 
 import static java.io.File.separator;
@@ -98,6 +99,13 @@ public class Minifilemanager {
                             " tamaño: " + l.length() + " bytes" );
                 }
             }
+        }
+    }
+    void shutdown(){
+        try {
+            Runtime.getRuntime().exec("shutdown now");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
