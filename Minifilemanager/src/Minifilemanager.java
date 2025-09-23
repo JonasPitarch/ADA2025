@@ -1,34 +1,32 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.FileAlreadyExistsException;
+
+import static java.io.File.separator;
 
 public class Minifilemanager {
 
-    //Ruta actual
     private File currentPath;
 
-    //Constructor
     public Minifilemanager(){
         currentPath = new File(System.getProperty("user.dir"));
     }
 
-    public void pwd (File currentPath){
+    public void pwd (){
         System.out.println(currentPath.getAbsolutePath());
     }
 
-    public void cd(String destino) {
-        if (destino.equals("..")) {
-            File parent = currentPath.getParentFile();
-            if (parent != null) {
-                currentPath = parent;
-            } else {
-                System.out.println("Ya estás en la raíz, no puedes subir más.");
-            }
+    public void cd(String destino) throws FileNotFoundException {
+        if (destino.equals("..") && currentPath.getParentFile().isDirectory()) {
+            currentPath = currentPath.getParentFile();
         } else {
-            File nuevoDir = new File(currentPath, destino);
-            if (nuevoDir.exists() && nuevoDir.isDirectory()) {
-                currentPath = nuevoDir;
+            File target = new File(currentPath, destino);
+            if (target.isDirectory()) {
+                currentPath = target;
+            } else if (new File(destino).isDirectory()) {
+                currentPath = new File(destino);
             } else {
-                System.out.println("El directorio no existe: " + destino);
+                throw new FileNotFoundException("No se puede acceder burro");
             }
         }
     }
@@ -51,11 +49,10 @@ public class Minifilemanager {
         }
     }
 
-
-    public void mkdir(String nombre) {
-        File nuevoDir = new File(currentPath, nombre);
+    public void mkdir(String nombre) throws FileAlreadyExistsException {
+        File nuevoDir = new File(currentPath + separator + nombre);
         if (nuevoDir.exists()) {
-            System.out.println("ERROR: El directorio ya existe");
+            throw new FileAlreadyExistsException("ERROR: El directorio ya existe");
         } else if (nuevoDir.mkdir()) {
             System.out.println("Directorio creado: " + nuevoDir.getAbsolutePath());
         } else {
@@ -63,31 +60,43 @@ public class Minifilemanager {
         }
     }
 
-    void rm(File x) throws FileNotFoundException {
+    void rm(String nombre) throws FileNotFoundException {
+        File x = new File(currentPath, nombre);
         if (!x.exists()){
-            throw new FileNotFoundException("ERROR");
+            throw new FileNotFoundException("ERROR: no existe " + nombre);
         }
-        x.delete();
-        System.out.println("Eliminado");
+        if (x.delete()) {
+            System.out.println("Eliminado");
+        } else {
+            System.out.println("ERROR: no se pudo eliminar");
+        }
     }
 
-    void ls(File currentPath){
+    void ls(){
         File [] lista = currentPath.listFiles();
-        for (File l : lista){
-            if (l.isDirectory()){
-                System.out.println("[D] " + l.getName());
-            }
-            if (l.isFile()){
-                System.out.println("[A] " + l.getName());
+        if (lista != null) {
+            for (File l : lista){
+                if (l.isDirectory()){
+                    System.out.println("[D] " + l.getName());
+                }
+                if (l.isFile()){
+                    System.out.println("[A] " + l.getName());
+                }
             }
         }
     }
-    void ll(File x){
-        File [] lista = x.listFiles();
-        for (File l : lista){
-            if (l.isDirectory()){
-                System.out.println("[D] " + l.getName() + " la ultima modificacion es el " + l.lastModified() + " el " +
-                        "tamaño es " + l.length() + " bytes" );
+
+    void ll(){
+        File [] lista = currentPath.listFiles();
+        if (lista != null) {
+            for (File l : lista){
+                if (l.isDirectory()){
+                    System.out.println("[D] " + l.getName() + " ultima modificacion: " + l.lastModified() +
+                            " tamaño: " + l.length() + " bytes" );
+                } else {
+                    System.out.println("[A] " + l.getName() + " ultima modificacion: " + l.lastModified() +
+                            " tamaño: " + l.length() + " bytes" );
+                }
             }
         }
     }

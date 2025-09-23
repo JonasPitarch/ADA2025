@@ -1,50 +1,78 @@
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.Scanner;
 
 public class Miniterminal {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args){
         Minifilemanager minifilemanager = new Minifilemanager();
         Scanner scanner = new Scanner(System.in);
         String comando;
-        String ruta = ".";
-        File x = new File(ruta);
+
         do {
-            System.out.print("@usrjonas$:");
+            System.out.print("@usrjonas:~$ ");
             comando = scanner.nextLine();
-            switch (comando){
+            String []c = comando.split(" ");
+
+            switch (c[0]) {
                 case "ls":
-                    minifilemanager.ls(x);
+                    minifilemanager.ls();
                     break;
+
                 case "cd":
-                    minifilemanager.cd(comando);
+                    if (c.length > 1) {
+                        try {
+                            minifilemanager.cd(c[1]);
+                        } catch (FileNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    } else {
+                        System.out.println("Uso: cd <directorio>");
+                    }
                     break;
+
                 case "pwd":
-                    minifilemanager.pwd(x);
+                    minifilemanager.pwd();
                     break;
 
                 case "ll":
-                    minifilemanager.ll(x);
+                    minifilemanager.ll();
                     break;
+
                 case "mkdir":
-                    System.out.print("Nombre del directorio: ");
-                    String dir = scanner.nextLine();
-                    minifilemanager.mkdir(dir);
+                    if (c.length > 1) {
+                        try {
+                            minifilemanager.mkdir(c[1]);
+                        } catch (FileAlreadyExistsException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    } else {
+                        System.out.println("Uso: mkdir <nombre>");
+                    }
                     break;
+
                 case "rm":
-                    minifilemanager.rm(x);
+                    if (c.length > 1) {
+                        try {
+                            minifilemanager.rm(c[1]);
+                        } catch (FileNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    } else {
+                        System.out.println("Uso: rm <archivo>");
+                    }
                     break;
+
                 case "mv":
-                    System.out.print("Archivo origen: ");
-                    String origen = scanner.nextLine();
-                    System.out.print("Archivo destino: ");
-                    String destino = scanner.nextLine();
-                    minifilemanager.mv(origen, destino);
+                    if (c.length > 2) {
+                        minifilemanager.mv(c[1], c[2]);
+                    } else {
+                        System.out.println("Uso: mv <origen> <destino>");
+                    }
                     break;
 
                 case "help":
                     minifilemanager.help();
-
+                    break;
             }
         }
         while (!comando.equals("exit"));
