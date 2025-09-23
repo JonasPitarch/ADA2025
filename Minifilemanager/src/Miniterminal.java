@@ -73,6 +73,11 @@ public class Miniterminal {
                 case "help":
                     minifilemanager.help();
                     break;
+                case "exit":
+                    break;
+
+                default:
+                    System.out.println("ERROR de sintaxis");
             }
         }
         while (!comando.equals("exit"));
