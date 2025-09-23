@@ -12,31 +12,57 @@ public class Minifilemanager {
     }
 
     public void pwd (File currentPath){
-        System.out.println(currentPath);
+        System.out.println(currentPath.getAbsolutePath());
     }
 
-    void cd (File currentPath){
-        if (currentPath.equals("..")){
-
+    public void cd(String destino) {
+        if (destino.equals("..")) {
+            File parent = currentPath.getParentFile();
+            if (parent != null) {
+                currentPath = parent;
+            } else {
+                System.out.println("Ya estás en la raíz, no puedes subir más.");
+            }
+        } else {
+            File nuevoDir = new File(currentPath, destino);
+            if (nuevoDir.exists() && nuevoDir.isDirectory()) {
+                currentPath = nuevoDir;
+            } else {
+                System.out.println("El directorio no existe: " + destino);
+            }
         }
     }
-    void mv (File currentPath, File n){
-        if (currentPath.exists()){
-            currentPath.renameTo(n);
+
+    public void mv(String origen, String destino) {
+        File archivoOrigen = new File(currentPath, origen);
+        File archivoDestino = new File(currentPath, destino);
+        if (!archivoOrigen.exists()) {
+            System.out.println("ERROR: El archivo o directorio origen no existe");
+            return;
         }
-        else {
-            System.out.println("ERROR: Revisa si la carpeta existe");
+        if (archivoDestino.exists()) {
+            System.out.println("ERROR: El destino ya existe");
+            return;
+        }
+        if (archivoOrigen.renameTo(archivoDestino)) {
+            System.out.println("Movido/Renombrado con éxito");
+        } else {
+            System.out.println("ERROR: No se pudo mover/renombrar");
         }
     }
 
-    void mkdir(File x){
-        if (x.exists()){
+
+    public void mkdir(String nombre) {
+        File nuevoDir = new File(currentPath, nombre);
+        if (nuevoDir.exists()) {
             System.out.println("ERROR: El directorio ya existe");
-        }
-        else {
-            x.mkdir();
+        } else if (nuevoDir.mkdir()) {
+            System.out.println("Directorio creado: " + nuevoDir.getAbsolutePath());
+        } else {
+            System.out.println("ERROR: No se pudo crear el directorio");
         }
     }
+
     void rm(File x) throws FileNotFoundException {
         if (!x.exists()){
             throw new FileNotFoundException("ERROR");
@@ -45,11 +71,25 @@ public class Minifilemanager {
         System.out.println("Eliminado");
     }
 
-    void ls(File x){
-
+    void ls(File currentPath){
+        File [] lista = currentPath.listFiles();
+        for (File l : lista){
+            if (l.isDirectory()){
+                System.out.println("[D] " + l.getName());
+            }
+            if (l.isFile()){
+                System.out.println("[A] " + l.getName());
+            }
+        }
     }
     void ll(File x){
-
+        File [] lista = x.listFiles();
+        for (File l : lista){
+            if (l.isDirectory()){
+                System.out.println("[D] " + l.getName() + " la ultima modificacion es el " + l.lastModified() + " el " +
+                        "tamaño es " + l.length() + " bytes" );
+            }
+        }
     }
 
     public void help() {
